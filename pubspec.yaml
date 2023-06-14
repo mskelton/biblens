@@ -15,6 +15,7 @@ dependencies:
   google_mlkit_commons: ^0.4.0
   image_picker: ^0.8.8
   reference_parser: ^3.0.1
+  url_launcher: ^6.1.11
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'text_detector_view.dart';
+import "verse_view.dart";
 
 List<CameraDescription> cameras = [];
 
@@ -10,11 +10,11 @@ Future<void> main() async {
 
   cameras = await availableCameras();
 
-  runApp(const MyApp());
+  runApp(const BiblensApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BiblensApp extends StatelessWidget {
+  const BiblensApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +35,7 @@ class Home extends StatelessWidget {
         title: const Text('Biblens'),
       ),
       body: const SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: TextRecognizerView(),
-          ),
-        ),
+        child: VerseView(),
       ),
     );
   }
