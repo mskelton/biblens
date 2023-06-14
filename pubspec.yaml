@@ -1,0 +1,21 @@
+name: biblens
+description: Detect Bible verse in text.
+publish_to: 'none'
+version: 1.0.0+1
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+flutter:
+  uses-material-design: true
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_mlkit_text_recognition: ^0.8.1
+  camera: ^0.10.5+2
+  google_mlkit_commons: ^0.4.0
+  image_picker: ^0.8.8
+  reference_parser: ^3.0.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
