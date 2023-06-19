@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:biblens/controllers/shutter_controller.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
@@ -11,10 +12,10 @@ enum ScreenMode { liveFeed, gallery }
 class CameraView extends StatefulWidget {
   const CameraView({
     Key? key,
-    required this.onImage,
+    required this.shutterController,
   }) : super(key: key);
 
-  final Function(InputImage inputImage) onImage;
+  final ShutterController shutterController;
 
   @override
   State<CameraView> createState() => _CameraViewState();
@@ -72,6 +73,7 @@ class _CameraViewState extends State<CameraView> {
           : ImageFormatGroup.bgra8888,
     );
 
+    widget.shutterController.capture = _controller?.takePicture;
     _controller?.initialize().then((_) {
       if (!mounted) {
         return;
@@ -91,7 +93,6 @@ class _CameraViewState extends State<CameraView> {
   void _processCameraImage(CameraImage image) {
     final inputImage = _inputImageFromCameraImage(image);
     if (inputImage == null) return;
-    widget.onImage(inputImage);
   }
 
   InputImage? _inputImageFromCameraImage(CameraImage image) {

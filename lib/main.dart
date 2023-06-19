@@ -1,7 +1,6 @@
+import 'package:biblens/home.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-
-import "verse_view.dart";
 
 List<CameraDescription> cameras = [];
 
@@ -21,22 +20,6 @@ class BiblensApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Home(),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Biblens'),
-      ),
-      body: const SafeArea(
-        child: VerseView(),
-      ),
     );
   }
 }
