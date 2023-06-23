@@ -348,10 +348,10 @@ packages:
     dependency: "direct main"
     description:
       name: reference_parser
-      sha256: "32ae19f3553077f5143c50eacc6a68e3db17078168309e45f6744d94335eb867"
+      sha256: d606ad8f3b9841b556e887bea5d7deba5701806e5162c15e3498cd2e6dd05130
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.3"
   sky_engine:
     dependency: transitive
     description: flutter

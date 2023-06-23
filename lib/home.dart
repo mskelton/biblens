@@ -1,5 +1,5 @@
-import 'package:biblens/verse_list_view.dart';
-import 'package:biblens/verse_recognizer_view.dart';
+import 'package:biblens/views/verse_list_view.dart';
+import 'package:biblens/views/verse_recognizer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 
