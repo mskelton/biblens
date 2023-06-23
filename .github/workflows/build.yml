@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions: read-all
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["apk", "appbundle", "ios --no-codesign"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build ${{ maxtrix.target }}
