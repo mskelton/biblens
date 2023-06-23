@@ -21,4 +21,4 @@ jobs:
           java-version: '11'
       - run: flutter pub get
       - run: flutter test
-      - run: flutter build ${{ maxtrix.target }}
+      - run: flutter build ${{ matrix.target }}
