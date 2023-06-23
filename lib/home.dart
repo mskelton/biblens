@@ -1,4 +1,3 @@
-import 'package:biblens/controllers/shutter_controller.dart';
 import 'package:biblens/verse_list_view.dart';
 import 'package:biblens/verse_recognizer_view.dart';
 import 'package:flutter/material.dart';
@@ -12,41 +11,52 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final shutterController = ShutterController();
   bool _isRecognizing = false;
+  bool _isLoading = false;
   List<Reference> _refs = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Biblens')),
-      floatingActionButtonLocation:
-          _isRecognizing ? FloatingActionButtonLocation.centerFloat : null,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: _isRecognizing ? Colors.white : null,
-        onPressed: () {
-          if (_isRecognizing) {
-            shutterController.capture();
-            return;
-          }
-
-          setState(() {
-            _isRecognizing = true;
-          });
-        },
-        child: _isRecognizing ? null : const Icon(Icons.camera_alt),
-      ),
+      floatingActionButton: _isRecognizing
+          ? null
+          : Container(
+              margin: const EdgeInsets.all(8),
+              child: SizedBox(
+                height: 64,
+                width: 64,
+                child: FittedBox(
+                  child: FloatingActionButton(
+                    child: const Icon(Icons.camera_alt),
+                    onPressed: () {
+                      setState(() {
+                        _isRecognizing = true;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
       body: _isRecognizing
           ? VerseRecognizerView(
-              controller: shutterController,
+              onCapture: () {
+                setState(() {
+                  _isRecognizing = false;
+                  _isLoading = true;
+                });
+              },
               onRecognized: (refs) {
                 setState(() {
+                  _isLoading = false;
                   _refs = refs;
-                  _isRecognizing = false;
                 });
               },
             )
-          : VerseListView(refs: _refs),
+          : VerseListView(
+              loading: _isLoading,
+              refs: _refs,
+            ),
     );
   }
 }

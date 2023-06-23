@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:biblens/controllers/shutter_controller.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
@@ -11,11 +10,11 @@ enum ScreenMode { liveFeed, gallery }
 
 class CameraView extends StatefulWidget {
   const CameraView({
-    Key? key,
-    required this.shutterController,
-  }) : super(key: key);
+    super.key,
+    required this.onCapture,
+  });
 
-  final ShutterController shutterController;
+  final Function(InputImage? inputImage) onCapture;
 
   @override
   State<CameraView> createState() => _CameraViewState();
@@ -23,6 +22,7 @@ class CameraView extends StatefulWidget {
 
 class _CameraViewState extends State<CameraView> {
   CameraController? _controller;
+  InputImage? _image;
   int _cameraIndex = -1;
 
   @override
@@ -47,16 +47,7 @@ class _CameraViewState extends State<CameraView> {
       return Container();
     }
 
-    final size = MediaQuery.of(context).size;
-    // Calculate scale depending on screen and camera ratios this is actually
-    // size.aspectRatio / (1 / camera.aspectRatio) because camera preview size is
-    // received as landscape but we're calculating for portrait orientation
-    var scale = size.aspectRatio * _controller!.value.aspectRatio;
-
-    // To prevent scaling down, invert the value
-    if (scale < 1) scale = 1 / scale;
-
-    return CameraPreview(_controller!);
+    return _liveFeedBody();
   }
 
   Future _startLiveFeed() async {
@@ -73,7 +64,6 @@ class _CameraViewState extends State<CameraView> {
           : ImageFormatGroup.bgra8888,
     );
 
-    widget.shutterController.capture = _controller?.takePicture;
     _controller?.initialize().then((_) {
       if (!mounted) {
         return;
@@ -90,17 +80,52 @@ class _CameraViewState extends State<CameraView> {
     _controller = null;
   }
 
-  void _processCameraImage(CameraImage image) {
-    final inputImage = _inputImageFromCameraImage(image);
-    if (inputImage == null) return;
+  Widget _liveFeedBody() {
+    if (_controller?.value.isInitialized == false) {
+      return Container();
+    }
+
+    final size = MediaQuery.of(context).size;
+    var scale = size.aspectRatio * _controller!.value.aspectRatio;
+    if (scale < 1) scale = 1 / scale;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        Transform.scale(
+          scale: scale,
+          child: Center(
+            child: CameraPreview(_controller!),
+          ),
+        ),
+        Positioned(
+          bottom: 32,
+          left: 50,
+          right: 50,
+          child: SizedBox(
+            width: 72,
+            height: 72,
+            child: FittedBox(
+              child: FloatingActionButton(
+                backgroundColor: Colors.white,
+                elevation: 2,
+                onPressed: () {
+                  widget.onCapture(_image);
+                },
+              ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
-  InputImage? _inputImageFromCameraImage(CameraImage image) {
+  void _processCameraImage(CameraImage image) {
     final camera = cameras[_cameraIndex];
     final rotation =
         InputImageRotationValue.fromRawValue(camera.sensorOrientation);
 
-    if (rotation == null) return null;
+    if (rotation == null) return;
 
     // Get image format
     final format = InputImageFormatValue.fromRawValue(image.format.raw);
@@ -110,14 +135,14 @@ class _CameraViewState extends State<CameraView> {
     // * bgra8888 for iOS
     if (format == null ||
         (Platform.isAndroid && format != InputImageFormat.nv21) ||
-        (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
+        (Platform.isIOS && format != InputImageFormat.bgra8888)) return;
 
     // Since format is constraint to nv21 or bgra8888, both only have one plane
-    if (image.planes.length != 1) return null;
+    if (image.planes.length != 1) return;
     final plane = image.planes.first;
 
     // Compose InputImage using bytes
-    return InputImage.fromBytes(
+    _image = InputImage.fromBytes(
       bytes: plane.bytes,
       metadata: InputImageMetadata(
         size: Size(image.width.toDouble(), image.height.toDouble()),
