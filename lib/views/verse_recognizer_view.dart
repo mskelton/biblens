@@ -23,6 +23,7 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
 
   bool _canProcess = true;
   bool _isBusy = false;
+  int _refCount = 0;
 
   @override
   void dispose() async {
@@ -34,30 +35,49 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
   @override
   Widget build(BuildContext context) {
     return CameraView(
-      onCapture: (image) {
+      refCount: _refCount,
+      onImage: (image) async {
+        if (image == null) return;
+
+        var text = await processImage(image);
+        if (text == null) return;
+
+        setState(() {
+          _refCount = findRefs(text).length;
+        });
+      },
+      onCapture: (image) async {
+        if (image == null) return;
         widget.onCapture();
 
-        if (image == null) return;
-        processImage(image);
+        var text = await processImage(image);
+        if (text == null) return;
+
+        var refs = findRefs(text);
+        widget.onRecognized(refs);
       },
     );
   }
 
-  Future<void> processImage(InputImage image) async {
-    if (!_canProcess || _isBusy) return;
+  Future<RecognizedText?> processImage(InputImage image) async {
+    if (!_canProcess || _isBusy) return null;
 
     _isBusy = true;
     setState(() {});
 
-    final recognizedText = await _textRecognizer.processImage(image);
-    final refs = parseAllReferences(recognizedText.text)
-        .where((ref) => ref.referenceType != ReferenceType.BOOK)
-        .toList(growable: false);
+    var text = await _textRecognizer.processImage(image);
 
-    widget.onRecognized(refs);
     _isBusy = false;
     if (mounted) {
       setState(() {});
     }
+
+    return text;
+  }
+
+  List<Reference> findRefs(RecognizedText recognizedText) {
+    return parseAllReferences(recognizedText.text)
+        .where((ref) => ref.referenceType != ReferenceType.BOOK)
+        .toList(growable: false);
   }
 }

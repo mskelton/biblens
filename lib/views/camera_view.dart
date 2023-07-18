@@ -8,9 +8,13 @@ import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 class CameraView extends StatefulWidget {
   const CameraView({
     super.key,
+    required this.refCount,
+    required this.onImage,
     required this.onCapture,
   });
 
+  final int refCount;
+  final Function(InputImage? inputImage) onImage;
   final Function(InputImage? inputImage) onCapture;
 
   @override
@@ -95,6 +99,20 @@ class _CameraViewState extends State<CameraView> {
             child: CameraPreview(_controller!),
           ),
         ),
+        // Positioned(
+        //   top: 32,
+        //   right: 32,
+        //   child: Badge(
+        //     child: Text(
+        //       widget.refCount.toString(),
+        //       style: const TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 32,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Positioned(
           bottom: 32,
           left: 50,
