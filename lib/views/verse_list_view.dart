@@ -1,4 +1,3 @@
-import 'package:biblens/data/librarian.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -61,7 +60,7 @@ class VerseListView extends StatelessWidget {
   String? _formatRef(Reference ref) {
     if (ref.osisBook == null) return null;
     var params =
-        '${Librarian.getParatextFromOsis(ref.osisBook!)}.${ref.startChapterNumber}.${ref.startVerseNumber}';
+        '${ref.abbrBook}.${ref.startChapterNumber}.${ref.startVerseNumber}';
 
     // If the start and end chapter are the same, we can do a version range.
     // Otherwise we have to just use the start chapter/verse.
