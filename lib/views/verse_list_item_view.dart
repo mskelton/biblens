@@ -22,8 +22,9 @@ class VerseListItem extends StatelessWidget {
         text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
-      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
       expandedCrossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(

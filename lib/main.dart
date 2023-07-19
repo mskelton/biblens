@@ -36,7 +36,7 @@ class BiblensApp extends StatelessWidget {
           style: TextButton.styleFrom(foregroundColor: accent),
         ),
         expansionTileTheme: ExpansionTileThemeData(
-          textColor: accent,
+          textColor: Colors.white,
           iconColor: accent,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
