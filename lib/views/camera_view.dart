@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:biblens/main.dart';
+import 'package:biblens/widgets/camera_badge.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
@@ -92,27 +93,19 @@ class _CameraViewState extends State<CameraView> {
 
     return Stack(
       fit: StackFit.expand,
-      children: <Widget>[
+      children: [
         Transform.scale(
           scale: scale,
           child: Center(
             child: CameraPreview(_controller!),
           ),
         ),
-        // Positioned(
-        //   top: 32,
-        //   right: 32,
-        //   child: Badge(
-        //     child: Text(
-        //       widget.refCount.toString(),
-        //       style: const TextStyle(
-        //         color: Colors.white,
-        //         fontSize: 32,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        if (widget.refCount != 0)
+          Positioned(
+            top: 24,
+            right: 24,
+            child: CameraBadge(text: widget.refCount.toString()),
+          ),
         Positioned(
           bottom: 32,
           left: 50,
@@ -166,5 +159,7 @@ class _CameraViewState extends State<CameraView> {
         bytesPerRow: plane.bytesPerRow, // iOS
       ),
     );
+
+    widget.onImage(_image);
   }
 }

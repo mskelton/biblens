@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-class Badge extends StatelessWidget {
+class CameraBadge extends StatelessWidget {
   final String text;
   final Color backgroundColor;
   final Color textColor;
 
-  const Badge({
+  const CameraBadge({
     super.key,
     required this.text,
-    this.backgroundColor = Colors.blue,
+    this.backgroundColor = Colors.red,
     this.textColor = Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      height: 100,
+      width: 48,
+      height: 48,
       decoration: ShapeDecoration(
         color: backgroundColor,
         shape: const CircleBorder(),
@@ -27,7 +27,7 @@ class Badge extends StatelessWidget {
           style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 22,
           ),
         ),
       ),

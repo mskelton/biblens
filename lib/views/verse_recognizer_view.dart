@@ -21,13 +21,11 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
   final TextRecognizer _textRecognizer =
       TextRecognizer(script: TextRecognitionScript.latin);
 
-  bool _canProcess = true;
   bool _isBusy = false;
   int _refCount = 0;
 
   @override
   void dispose() async {
-    _canProcess = false;
     _textRecognizer.close();
     super.dispose();
   }
@@ -42,17 +40,17 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
         var text = await processImage(image);
         if (text == null) return;
 
-        setState(() {
-          _refCount = findRefs(text).length;
-        });
+        if (mounted) {
+          setState(() {
+            _refCount = findRefs(text).length;
+          });
+        }
       },
       onCapture: (image) async {
         if (image == null) return;
         widget.onCapture();
 
-        var text = await processImage(image);
-        if (text == null) return;
-
+        var text = await _textRecognizer.processImage(image);
         var refs = findRefs(text);
         widget.onRecognized(refs);
       },
@@ -60,7 +58,7 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
   }
 
   Future<RecognizedText?> processImage(InputImage image) async {
-    if (!_canProcess || _isBusy) return null;
+    if (!mounted || _isBusy) return null;
 
     _isBusy = true;
     setState(() {});
