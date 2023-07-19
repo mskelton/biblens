@@ -12,7 +12,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool _isRecognizing = false;
-  bool _isLoading = false;
   List<Reference> _refs = [];
 
   @override
@@ -40,25 +39,14 @@ class _HomeState extends State<Home> {
             ),
       body: _isRecognizing
           ? VerseRecognizerView(
-              onCapture: (refsFuture) async {
-                print('STARTING CAPTURE');
+              onCapture: (refs) {
                 setState(() {
                   _isRecognizing = false;
-                  _isLoading = true;
+                  _refs = refs;
                 });
-
-                print('WAITING FOR FUTURE');
-                _refs = await refsFuture;
-                _isLoading = false;
-                setState(() {});
-
-                print('DONE');
               },
             )
-          : VerseListView(
-              loading: _isLoading,
-              refs: _refs,
-            ),
+          : VerseListView(refs: _refs),
     );
   }
 }

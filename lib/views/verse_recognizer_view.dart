@@ -9,7 +9,7 @@ class VerseRecognizerView extends StatefulWidget {
     required this.onCapture,
   });
 
-  final Function onCapture;
+  final Function(List<Reference>) onCapture;
 
   @override
   State<VerseRecognizerView> createState() => _VerseRecognizerViewState();
@@ -20,7 +20,7 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
       TextRecognizer(script: TextRecognitionScript.latin);
 
   bool _isBusy = false;
-  int _refCount = 0;
+  List<Reference> _refs = [];
 
   @override
   void dispose() async {
@@ -31,7 +31,7 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
   @override
   Widget build(BuildContext context) {
     return CameraView(
-      refCount: _refCount,
+      refCount: _refs.length,
       onImage: (image) async {
         if (image == null) return;
 
@@ -40,18 +40,12 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
 
         if (mounted) {
           setState(() {
-            _refCount = findRefs(text).length;
+            _refs = findRefs(text);
           });
         }
       },
-      onCapture: (image) async {
-        if (image == null) return;
-
-        var refsFuture = _textRecognizer.processImage(image).then((value) {
-          return findRefs(value);
-        });
-
-        widget.onCapture(refsFuture);
+      onCapture: (image) {
+        widget.onCapture(_refs);
       },
     );
   }

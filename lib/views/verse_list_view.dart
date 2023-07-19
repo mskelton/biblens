@@ -10,19 +10,13 @@ Future<String> loadBibleData() async {
 class VerseListView extends StatelessWidget {
   const VerseListView({
     Key? key,
-    required this.loading,
     required this.refs,
   }) : super(key: key);
 
-  final bool loading;
   final List<Reference> refs;
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     if (refs.isEmpty) {
       return const Center(
         child: Column(
