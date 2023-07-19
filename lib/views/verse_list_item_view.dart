@@ -3,6 +3,7 @@ import 'package:biblens/main.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:xml/xml.dart';
 
 class VerseListItem extends StatelessWidget {
   const VerseListItem({
@@ -45,22 +46,35 @@ class VerseListItem extends StatelessWidget {
   }
 
   String getVerseText(Reference ref) {
-    var data = bibleData!;
-    var book = data
-        .getElement('bible')
-        ?.childElements
-        .singleWhere((el) => el.getAttribute('n') == ref.book);
+    var refChapter = ref.startChapterNumber.toString();
+    var refVerses = ref.verses?.map((v) => v.verseNumber.toString());
 
-    var chapter = book?.childElements.singleWhere(
-        (el) => el.getAttribute('n') == ref.startChapterNumber.toString());
+    try {
+      var data = bibleData!;
+      var book = data
+          .getElement('bible')
+          ?.childElements
+          .singleWhere((el) => el.getAttribute('n') == ref.book);
 
-    var verse = chapter?.childElements
-        .singleWhere(
-            (el) => el.getAttribute('n') == ref.startVerseNumber.toString())
-        .firstChild
-        ?.value;
+      var chapter = book?.childElements
+          .singleWhere((el) => el.getAttribute('n') == refChapter)
+          .childElements;
 
-    return verse ?? 'Verse not found';
+      var verses = refVerses == null
+          ? chapter?.join(' ')
+          : getVerses(refVerses, chapter) ?? '';
+
+      return verses ?? 'Passage not found';
+    } catch (e) {
+      return 'Passage not found';
+    }
+  }
+
+  String? getVerses(Iterable<String> refVerses, Iterable<XmlElement>? chapter) {
+    return chapter
+        ?.where((el) => refVerses.contains(el.getAttribute('n')))
+        .map((v) => v.firstChild?.value)
+        .join(' ');
   }
 
   String? _formatRef(Reference ref) {

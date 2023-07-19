@@ -8,7 +8,7 @@ class CameraBadge extends StatelessWidget {
   const CameraBadge({
     super.key,
     required this.text,
-    this.backgroundColor = Colors.red,
+    this.backgroundColor = Colors.teal,
     this.textColor = Colors.white,
   });
 
