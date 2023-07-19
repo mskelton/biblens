@@ -7,11 +7,9 @@ class VerseRecognizerView extends StatefulWidget {
   const VerseRecognizerView({
     super.key,
     required this.onCapture,
-    required this.onRecognized,
   });
 
   final Function onCapture;
-  final Function(List<Reference> reference) onRecognized;
 
   @override
   State<VerseRecognizerView> createState() => _VerseRecognizerViewState();
@@ -48,11 +46,12 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
       },
       onCapture: (image) async {
         if (image == null) return;
-        widget.onCapture();
 
-        var text = await _textRecognizer.processImage(image);
-        var refs = findRefs(text);
-        widget.onRecognized(refs);
+        var refsFuture = _textRecognizer.processImage(image).then((value) {
+          return findRefs(value);
+        });
+
+        widget.onCapture(refsFuture);
       },
     );
   }

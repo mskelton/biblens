@@ -42,3 +42,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Submodule copied files
+/assets/translations/*
+!/assets/translations/.gitkeep

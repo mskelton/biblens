@@ -1,6 +1,11 @@
+import 'package:biblens/views/verse_list_item_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:reference_parser/reference_parser.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+Future<String> loadBibleData() async {
+  return await rootBundle.loadString('assets/translations/ESV.xml');
+}
 
 class VerseListView extends StatelessWidget {
   const VerseListView({
@@ -42,47 +47,8 @@ class VerseListView extends StatelessWidget {
     return ListView.builder(
       itemCount: refs.length,
       itemBuilder: (context, index) {
-        final ref = refs[index];
-
-        return ListTile(
-          title: Text(ref.toString()),
-          onTap: () {
-            final uri = _buildUri(ref);
-            if (uri == null) return;
-
-            _launchUrl(uri);
-          },
-        );
+        return VerseListItem(ref: refs[index]);
       },
     );
-  }
-
-  String? _formatRef(Reference ref) {
-    if (ref.osisBook == null) return null;
-    var params =
-        '${ref.abbrBook}.${ref.startChapterNumber}.${ref.startVerseNumber}';
-
-    // If the start and end chapter are the same, we can do a version range.
-    // Otherwise we have to just use the start chapter/verse.
-    if (ref.startChapterNumber == ref.endChapterNumber &&
-        ref.startVerseNumber != ref.endVerseNumber) {
-      params += '-${ref.endVerseNumber}';
-    }
-
-    return params;
-  }
-
-  Uri? _buildUri(Reference ref) {
-    final reference = _formatRef(ref);
-
-    return reference != null
-        ? Uri.parse('youversion://bible?reference=$reference')
-        : null;
-  }
-
-  Future<void> _launchUrl(Uri url) async {
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
   }
 }

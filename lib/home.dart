@@ -40,17 +40,19 @@ class _HomeState extends State<Home> {
             ),
       body: _isRecognizing
           ? VerseRecognizerView(
-              onCapture: () {
+              onCapture: (refsFuture) async {
+                print('STARTING CAPTURE');
                 setState(() {
                   _isRecognizing = false;
                   _isLoading = true;
                 });
-              },
-              onRecognized: (refs) {
-                setState(() {
-                  _isLoading = false;
-                  _refs = refs;
-                });
+
+                print('WAITING FOR FUTURE');
+                _refs = await refsFuture;
+                _isLoading = false;
+                setState(() {});
+
+                print('DONE');
               },
             )
           : VerseListView(

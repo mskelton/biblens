@@ -1,14 +1,18 @@
 import 'package:biblens/home.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:xml/xml.dart';
 
 List<CameraDescription> cameras = [];
-Color appColor = const Color(0xFF565BD8);
+XmlDocument? bibleData;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   cameras = await availableCameras();
+  var bibleText = await rootBundle.loadString('assets/translations/ESV.xml');
+  bibleData = XmlDocument.parse(bibleText);
 
   runApp(const BiblensApp());
 }
@@ -18,15 +22,25 @@ class BiblensApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var primary = Colors.indigo[400];
+    var accent = Colors.teal[400];
+
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColorDark: appColor,
+        primaryColorDark: primary,
         appBarTheme: AppBarTheme(
-          backgroundColor: appColor,
+          backgroundColor: primary,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: accent),
+        ),
+        expansionTileTheme: ExpansionTileThemeData(
+          textColor: accent,
+          iconColor: accent,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: appColor,
+          backgroundColor: primary,
           foregroundColor: Colors.white,
         ),
       ),
