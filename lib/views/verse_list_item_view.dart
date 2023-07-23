@@ -1,21 +1,29 @@
 import 'package:biblens/data/librarian.dart';
-import 'package:biblens/main.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
 
+Future<XmlDocument> loadBible(BuildContext context) async {
+  var bundle = DefaultAssetBundle.of(context);
+  var text = await bundle.loadString('assets/translations/ESV.xml');
+
+  return XmlDocument.parse(text);
+}
+
 class VerseListItem extends StatelessWidget {
   const VerseListItem({
     Key? key,
     required this.ref,
+    required this.data,
   }) : super(key: key);
 
   final Reference ref;
+  final XmlDocument data;
 
   @override
   Widget build(BuildContext context) {
-    var text = getVerseText(ref);
+    var text = getVerseText(data, ref);
 
     return ExpansionTile(
       title: Text(ref.toString()),
@@ -45,14 +53,13 @@ class VerseListItem extends StatelessWidget {
     );
   }
 
-  String getVerseText(Reference ref) {
+  String getVerseText(XmlDocument? data, Reference ref) {
     var refChapter = ref.startChapterNumber.toString();
     var refVerses = ref.verses?.map((v) => v.verseNumber.toString());
 
     try {
-      var data = bibleData!;
       var book = data
-          .getElement('bible')
+          ?.getElement('bible')
           ?.childElements
           .singleWhere((el) => el.getAttribute('n') == ref.book);
 

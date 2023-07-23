@@ -1,7 +1,6 @@
 import 'package:biblens/home.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:xml/xml.dart';
 
 List<CameraDescription> cameras = [];
@@ -11,8 +10,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   cameras = await availableCameras();
-  var bibleText = await rootBundle.loadString('assets/translations/ESV.xml');
-  bibleData = XmlDocument.parse(bibleText);
 
   runApp(const BiblensApp());
 }

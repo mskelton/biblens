@@ -1,13 +1,9 @@
 import 'package:biblens/views/verse_list_item_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:reference_parser/reference_parser.dart';
+import 'package:xml/xml.dart';
 
-Future<String> loadBibleData() async {
-  return await rootBundle.loadString('assets/translations/ESV.xml');
-}
-
-class VerseListView extends StatelessWidget {
+class VerseListView extends StatefulWidget {
   const VerseListView({
     Key? key,
     required this.refs,
@@ -16,8 +12,15 @@ class VerseListView extends StatelessWidget {
   final List<Reference> refs;
 
   @override
+  State<VerseListView> createState() => _VerseListViewState();
+}
+
+class _VerseListViewState extends State<VerseListView> {
+  Future<XmlDocument>? _data;
+
+  @override
   Widget build(BuildContext context) {
-    if (refs.isEmpty) {
+    if (widget.refs.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -38,10 +41,24 @@ class VerseListView extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
-      itemCount: refs.length,
-      itemBuilder: (context, index) {
-        return VerseListItem(ref: refs[index]);
+    _data ??= loadBible(context);
+
+    return FutureBuilder(
+      future: _data,
+      builder: (BuildContext context, AsyncSnapshot<XmlDocument> snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return ListView.builder(
+          itemCount: widget.refs.length,
+          itemBuilder: (context, index) {
+            return VerseListItem(
+              data: snapshot.requireData,
+              ref: widget.refs[index],
+            );
+          },
+        );
       },
     );
   }
