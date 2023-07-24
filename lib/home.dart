@@ -1,7 +1,9 @@
+import 'package:biblens/data/bible.dart';
 import 'package:biblens/views/verse_list_view.dart';
 import 'package:biblens/views/verse_recognizer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
+import 'package:xml/xml.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,6 +15,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool _isRecognizing = false;
   List<Reference> _refs = [];
+  final Future<XmlDocument> _data = loadBible();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,20 @@ class _HomeState extends State<Home> {
                 });
               },
             )
-          : VerseListView(refs: _refs),
+          : FutureBuilder(
+              future: _data,
+              builder:
+                  (BuildContext context, AsyncSnapshot<XmlDocument> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return VerseListView(
+                  data: snapshot.requireData,
+                  refs: _refs,
+                );
+              },
+            ),
     );
   }
 }

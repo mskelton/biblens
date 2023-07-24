@@ -4,13 +4,6 @@ import 'package:reference_parser/reference_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart';
 
-Future<XmlDocument> loadBible(BuildContext context) async {
-  var bundle = DefaultAssetBundle.of(context);
-  var text = await bundle.loadString('assets/translations/ESV.xml');
-
-  return XmlDocument.parse(text);
-}
-
 class VerseListItem extends StatelessWidget {
   const VerseListItem({
     Key? key,

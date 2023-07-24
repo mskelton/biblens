@@ -3,24 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
 
-class VerseListView extends StatefulWidget {
+class VerseListView extends StatelessWidget {
   const VerseListView({
     Key? key,
+    required this.data,
     required this.refs,
   }) : super(key: key);
 
+  final XmlDocument data;
   final List<Reference> refs;
 
   @override
-  State<VerseListView> createState() => _VerseListViewState();
-}
-
-class _VerseListViewState extends State<VerseListView> {
-  Future<XmlDocument>? _data;
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.refs.isEmpty) {
+    if (refs.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -41,23 +36,12 @@ class _VerseListViewState extends State<VerseListView> {
       );
     }
 
-    _data ??= loadBible(context);
-
-    return FutureBuilder(
-      future: _data,
-      builder: (BuildContext context, AsyncSnapshot<XmlDocument> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        return ListView.builder(
-          itemCount: widget.refs.length,
-          itemBuilder: (context, index) {
-            return VerseListItem(
-              data: snapshot.requireData,
-              ref: widget.refs[index],
-            );
-          },
+    return ListView.builder(
+      itemCount: refs.length,
+      itemBuilder: (context, index) {
+        return VerseListItem(
+          data: data,
+          ref: refs[index],
         );
       },
     );
