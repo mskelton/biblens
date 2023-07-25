@@ -26,6 +26,8 @@ jobs:
           java-version: '11'
       - name: Install dependencies
         run: flutter pub get
+      - name: Codegen
+        run: make gen
       - name: Test
         run: flutter test
       - name: Build app
