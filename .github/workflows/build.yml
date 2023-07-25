@@ -21,5 +21,4 @@ jobs:
           java-version: '11'
       - run: flutter pub get
       - run: flutter test
-        if: false
       - run: flutter build ${{ matrix.target }}
