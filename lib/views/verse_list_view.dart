@@ -4,14 +4,14 @@ import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
 
 class VerseListView extends StatelessWidget {
+  final XmlDocument data;
+
+  final List<Reference> refs;
   const VerseListView({
     Key? key,
     required this.data,
     required this.refs,
   }) : super(key: key);
-
-  final XmlDocument data;
-  final List<Reference> refs;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +37,7 @@ class VerseListView extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 140),
       itemCount: refs.length,
       itemBuilder: (context, index) {
         return VerseListItem(
