@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
@@ -21,7 +19,7 @@ class VerseText extends StatelessWidget {
       return Text(getVerseText(data, ref, ref.startVerse.verseNumber));
     }
 
-    List<TextSpan> verses = [];
+    List<InlineSpan> verses = [];
 
     // Add all the verses with their corresponding verse numbers
     ref.verses?.asMap().forEach((index, verse) {
@@ -29,11 +27,16 @@ class VerseText extends StatelessWidget {
       var verseText = getVerseText(data, ref, verse.verseNumber);
 
       verses.add(
-        TextSpan(
-          text: (index == 0 ? '' : '  ') + verseNumber,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontFeatures: [FontFeature.superscripts()],
+        WidgetSpan(
+          child: Transform.translate(
+            offset: const Offset(0.0, -5.0),
+            child: Text(
+              (index == 0 ? '' : '  ') + verseNumber,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       );
