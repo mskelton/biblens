@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
 
   bool _isRecognizing = false;
   List<Reference> _refs = kDebugMode
-      ? [parseReference('John 3:16'), parseReference('1 John 3:1-19')]
+      ? [parseReference('John 3:16'), parseReference('1 John 3:1-5')]
       : [];
 
   @override

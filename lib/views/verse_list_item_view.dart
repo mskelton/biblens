@@ -1,3 +1,4 @@
+import 'package:biblens/components/verse_text.dart';
 import 'package:biblens/data/librarian.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
@@ -30,7 +31,7 @@ class VerseListItem extends StatelessWidget {
       expandedCrossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
-          title: Text(text),
+          title: VerseText(data: data, ref: ref),
           contentPadding: const EdgeInsets.only(left: 8),
         ),
         TextButton(
