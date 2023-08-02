@@ -78,18 +78,11 @@ class VerseListItem extends StatelessWidget {
   }
 
   String? _formatRef(Reference ref) {
-    if (ref.osisBook == null) return null;
-    var params =
-        '${Librarian.getParatextFromOsis(ref.osisBook!)}.${ref.startChapterNumber}.${ref.startVerseNumber}';
+    final book = ref.osisBook;
 
-    // If the start and end chapter are the same, we can do a version range.
-    // Otherwise we have to just use the start chapter/verse.
-    if (ref.startChapterNumber == ref.endChapterNumber &&
-        ref.startVerseNumber != ref.endVerseNumber) {
-      params += '-${ref.endVerseNumber}';
-    }
-
-    return params;
+    return book == null
+        ? null
+        : '${Librarian.getParatextFromOsis(book)}.${ref.startChapterNumber}';
   }
 
   Uri? _buildUri(Reference ref) {
