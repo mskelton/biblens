@@ -27,15 +27,19 @@ void main() async {
     var ref = parseReference('John 3:16-17');
     await tester.pumpWidget(VerseListItemTest(data: data, ref: ref));
 
-    expect(find.textContaining('For God so loved'), findsOneWidget);
-    expect(find.textContaining('condemn the world'), findsOneWidget);
+    expect(find.textContaining('For God so loved', findRichText: true),
+        findsOneWidget);
+    expect(find.textContaining('condemn the world', findRichText: true),
+        findsOneWidget);
     expect(find.text('Open in Bible App'), findsNothing);
 
     await tester.tap(find.text('John 3:16-17'));
     await tester.pump();
 
-    expect(find.textContaining('condemn the world'), findsNWidgets(2));
-    expect(find.textContaining('eternal life'), findsNWidgets(2));
+    expect(find.textContaining('condemn the world', findRichText: true),
+        findsNWidgets(2));
+    expect(find.textContaining('eternal life', findRichText: true),
+        findsNWidgets(2));
     expect(find.text('Open in Bible App'), findsOneWidget);
   });
 
