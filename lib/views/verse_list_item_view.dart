@@ -8,21 +8,21 @@ import 'package:xml/xml.dart';
 class VerseListItem extends StatelessWidget {
   const VerseListItem({
     Key? key,
-    required this.ref,
+    required this.reference,
     required this.data,
   }) : super(key: key);
 
-  final Reference ref;
+  final Reference reference;
   final XmlDocument data;
 
   @override
   Widget build(BuildContext context) {
-    var text = getVerseText(data, ref);
+    var text = getVerseText(data, reference);
 
     return ExpansionTile(
-      title: Text(ref.toString()),
+      title: Text(reference.toString()),
       subtitle: Text(
-        text,
+        text ?? 'Passage not found',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.bodySmall,
@@ -31,23 +31,24 @@ class VerseListItem extends StatelessWidget {
       expandedCrossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
-          title: VerseText(data: data, ref: ref),
+          title: VerseText(data: data, reference: reference),
           contentPadding: const EdgeInsets.only(left: 8),
         ),
-        TextButton(
-          child: const Text('Open in Bible App'),
-          onPressed: () {
-            final uri = _buildUri(ref);
-            if (uri == null) return;
+        if (text != null)
+          TextButton(
+            child: const Text('Open in Bible App'),
+            onPressed: () {
+              final uri = _buildUri(reference);
+              if (uri == null) return;
 
-            _launchUrl(uri);
-          },
-        )
+              _launchUrl(uri);
+            },
+          )
       ],
     );
   }
 
-  String getVerseText(XmlDocument? data, Reference ref) {
+  String? getVerseText(XmlDocument? data, Reference ref) {
     var refChapter = ref.startChapterNumber.toString();
     var refVerses = ref.verses?.map((v) => v.verseNumber.toString());
 
@@ -65,9 +66,9 @@ class VerseListItem extends StatelessWidget {
           ? chapter?.join(' ')
           : getVerses(refVerses, chapter) ?? '';
 
-      return verses ?? 'Passage not found';
+      return verses;
     } catch (e) {
-      return 'Passage not found';
+      return null;
     }
   }
 

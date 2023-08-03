@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   final Future<XmlDocument> _data = loadBible();
 
   bool _isRecognizing = false;
-  List<Reference> _refs = kDebugMode
+  List<Reference> _references = kDebugMode
       ? [parseReference('John 3:16'), parseReference('1 John 3:1-5')]
       : [];
 
@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
               onCapture: (refs) {
                 setState(() {
                   _isRecognizing = false;
-                  _refs = refs;
+                  _references = refs;
                 });
               },
             )
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
 
                 return VerseListView(
                   data: snapshot.requireData,
-                  refs: _refs,
+                  references: _references,
                 );
               },
             ),

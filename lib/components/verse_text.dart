@@ -5,43 +5,41 @@ import 'package:xml/xml.dart';
 class VerseText extends StatelessWidget {
   const VerseText({
     Key? key,
-    required this.ref,
+    required this.reference,
     required this.data,
   }) : super(key: key);
 
-  final Reference ref;
+  final Reference reference;
   final XmlDocument data;
 
   @override
   Widget build(BuildContext context) {
-    // Single verses don't require verse numbers
-    if (ref.verses?.length == 1) {
-      return Text(getVerseText(data, ref, ref.startVerse.verseNumber));
-    }
-
     List<InlineSpan> verses = [];
 
     // Add all the verses with their corresponding verse numbers
-    ref.verses?.asMap().forEach((index, verse) {
+    reference.verses?.asMap().forEach((index, verse) {
       var verseNumber = verse.verseNumber.toString();
-      var verseText = getVerseText(data, ref, verse.verseNumber);
+      var verseText = getVerseText(data, reference, verse.verseNumber) ??
+          "Passage not found";
 
-      verses.add(
-        WidgetSpan(
-          child: Transform.translate(
-            offset: const Offset(0.0, -5.0),
-            child: Text(
-              (index == 0 ? '' : '  ') + verseNumber,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
+      if (index != 0) {
+        verses.add(
+          WidgetSpan(
+            child: Transform.translate(
+              offset: const Offset(0.0, -5.0),
+              child: Text(
+                '  $verseNumber',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
 
-      verses.add(TextSpan(text: ' $verseText'));
+      verses.add(TextSpan(text: (index == 0 ? '' : ' ') + verseText));
     });
 
     return RichText(
@@ -52,7 +50,7 @@ class VerseText extends StatelessWidget {
     );
   }
 
-  String getVerseText(XmlDocument? data, Reference ref, int verseNumber) {
+  String? getVerseText(XmlDocument? data, Reference ref, int verseNumber) {
     var refChapter = ref.startChapterNumber.toString();
 
     try {
@@ -70,9 +68,9 @@ class VerseText extends StatelessWidget {
           .firstChild
           ?.value;
 
-      return verse ?? "Passage not found";
+      return verse;
     } catch (e) {
-      return 'Passage not found';
+      return null;
     }
   }
 }

@@ -6,16 +6,16 @@ import 'package:xml/xml.dart';
 class VerseListView extends StatelessWidget {
   final XmlDocument data;
 
-  final List<Reference> refs;
+  final List<Reference> references;
   const VerseListView({
     Key? key,
     required this.data,
-    required this.refs,
+    required this.references,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (refs.isEmpty) {
+    if (references.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -38,11 +38,11 @@ class VerseListView extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 140),
-      itemCount: refs.length,
+      itemCount: references.length,
       itemBuilder: (context, index) {
         return VerseListItem(
           data: data,
-          ref: refs[index],
+          reference: references[index],
         );
       },
     );
