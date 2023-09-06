@@ -1,10 +1,11 @@
 import 'package:biblens/data/bible.dart';
 import 'package:biblens/views/verse_list_view.dart';
 import 'package:biblens/views/verse_recognizer_view.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
+
+bool _initialData = true;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -17,8 +18,12 @@ class _HomeState extends State<Home> {
   final Future<XmlDocument> _data = loadBible();
 
   bool _isRecognizing = false;
-  List<Reference> _references = kDebugMode
-      ? [parseReference('John 3:16'), parseReference('1 John 3:1-5')]
+  List<Reference> _references = _initialData
+      ? [
+          parseReference('John 3:16'),
+          parseReference('1 John 3:1-5'),
+          parseReference('Psalm 23:80'),
+        ]
       : [];
 
   @override
