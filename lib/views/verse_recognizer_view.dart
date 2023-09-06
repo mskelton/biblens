@@ -68,7 +68,7 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
 
   List<Reference> findRefs(RecognizedText recognizedText) {
     return parseAllReferences(recognizedText.text)
-        .where((ref) => ref.referenceType != ReferenceType.BOOK)
+        .where((ref) => ref.isValid && ref.referenceType != ReferenceType.BOOK)
         .toList(growable: false);
   }
 }
