@@ -1,11 +1,12 @@
 import 'package:biblens/data/bible.dart';
+import 'package:biblens/views/SplashScreenView.dart';
 import 'package:biblens/views/verse_list_view.dart';
 import 'package:biblens/views/verse_recognizer_view.dart';
 import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
 
-bool _initialData = true;
+bool _initialData = false;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final Future<XmlDocument> _data = loadBible();
 
+  bool _isSplash = true;
   bool _isRecognizing = false;
   List<Reference> _references = _initialData
       ? [
@@ -53,25 +55,28 @@ class _HomeState extends State<Home> {
           ? VerseRecognizerView(
               onCapture: (refs) {
                 setState(() {
+                  _isSplash = false;
                   _isRecognizing = false;
                   _references = refs;
                 });
               },
             )
-          : FutureBuilder(
-              future: _data,
-              builder:
-                  (BuildContext context, AsyncSnapshot<XmlDocument> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+          : _isSplash
+              ? const SplashScreenView()
+              : FutureBuilder(
+                  future: _data,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<XmlDocument> snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                return VerseListView(
-                  data: snapshot.requireData,
-                  references: _references,
-                );
-              },
-            ),
+                    return VerseListView(
+                      data: snapshot.requireData,
+                      references: _references,
+                    );
+                  },
+                ),
     );
   }
 }
