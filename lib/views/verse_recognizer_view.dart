@@ -1,3 +1,4 @@
+import 'package:biblens/utils/merge.dart';
 import 'package:biblens/views/camera_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -70,21 +71,5 @@ class _VerseRecognizerViewState extends State<VerseRecognizerView> {
     return parseAllReferences(recognizedText.text)
         .where((ref) => ref.isValid && ref.referenceType != ReferenceType.BOOK)
         .toList(growable: false);
-  }
-
-  // Merge the existing refs with the new refs. This helps since camera shake
-  // can cause refs to be missed. With merging, we keep any existing refs and
-  // add anything new that is recognized so that we get the most complete list
-  // for the current recognition session.
-  List<Reference> mergeRefs(List<Reference> prev, List<Reference> next) {
-    var refs = [...prev];
-
-    for (var ref in next) {
-      if (!refs.any((r) => r.shortReference == ref.shortReference)) {
-        refs.add(ref);
-      }
-    }
-
-    return refs;
   }
 }
