@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
 
-bool _initialData = true;
+bool _initialData = false;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
