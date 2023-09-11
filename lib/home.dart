@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:reference_parser/reference_parser.dart';
 import 'package:xml/xml.dart';
 
-bool _initialData = false;
+bool _initialData = true;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
                 });
               },
             )
-          : _isSplash
+          : _isSplash && !_initialData
               ? const SplashScreenView()
               : FutureBuilder(
                   future: _data,

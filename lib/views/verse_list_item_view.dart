@@ -84,7 +84,7 @@ class VerseListItem extends StatelessWidget {
 
     return book == null
         ? null
-        : '${Librarian.getParatextFromOsis(book)}.${ref.startChapterNumber}';
+        : '${Librarian.getParatextFromOsis(book)}.${ref.startChapterNumber}.${ref.startVerseNumber}';
   }
 
   Uri? _buildUri(Reference ref) {
